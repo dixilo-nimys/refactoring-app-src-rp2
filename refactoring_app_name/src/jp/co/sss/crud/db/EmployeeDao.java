@@ -10,21 +10,19 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import jp.co.sss.crud.dto.Department;
 import jp.co.sss.crud.dto.Employee;
-import jp.co.sss.crud.util.Constant;
+import jp.co.sss.crud.util.ConstantMsg;
 import jp.co.sss.crud.util.ConstantSQL;
+import jp.co.sss.crud.util.ConstantValue;
 
-/**
- * DB操作処理用のクラス
- *
- * @author System Shared
- */
-public class DBController {
-
+public class EmployeeDao {
+	
 	/** インスタンス化を禁止 */
-	private DBController() {
+	private EmployeeDao() {
 	}
 
 	/**
@@ -33,13 +31,12 @@ public class DBController {
 	 * @throws ClassNotFoundException ドライバクラスが不在の場合に送出
 	 * @throws SQLException           DB処理でエラーが発生した場合に送出
 	 */
-	public static void findAll() throws ClassNotFoundException, SQLException {
+	public static List<Employee> findAll() throws ClassNotFoundException, SQLException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
+		List<Employee> employees = new ArrayList<Employee>();
 		
-		Employee employee = new Employee();
-		Department department = new Department();
 		try {
 			// DBに接続
 			connection = DBManager.getConnection();
@@ -50,15 +47,11 @@ public class DBController {
 			// SQL文を実行
 			resultSet = preparedStatement.executeQuery();
 
-			//resultSetの結果Setがない場合はfalse
-			if (!resultSet.isBeforeFirst()) {
-				System.out.println(Constant.MSG_NOT_FIND);
-				return;
-			}
-
 			// レコードを出力
-			System.out.println(Constant.EMP_COLUMN_NAME);
+//			System.out.println(ConstantValue.EMP_COLUMN_NAME);
 			while (resultSet.next()) {
+				Employee employee = new Employee();
+				Department department = new Department();
 				//DTO への格納 
 				employee.setEmpId(resultSet.getInt("emp_id")); 
 				employee.setEmpName(resultSet.getString("emp_name"));
@@ -66,11 +59,10 @@ public class DBController {
 				employee.setBirthday(resultSet.getString("birthday"));
 				department.setDeptName(resultSet.getString("dept_name"));
 				employee.setDepartment(department);
-				System.out.println(employee);
+				employees.add(employee);
 			}
-			
 			//DTO を戻す 
-			return;
+			return employees;
 		} finally {
 			// ResultSetをクローズ
 			DBManager.close(resultSet);
@@ -117,11 +109,10 @@ public class DBController {
 			// SQL文を実行
 			resultSet = preparedStatement.executeQuery();
 			if (!resultSet.isBeforeFirst()) {
-				System.out.println(Constant.MSG_NOT_FIND);
+				System.out.println(ConstantMsg.MSG_NOT_FIND);
 				return;
 			}
-
-			System.out.println(Constant.EMP_COLUMN_NAME);
+			
 			while (resultSet.next()) {
 				//DTO への格納 
 				employee.setEmpId(resultSet.getInt("emp_id")); 
@@ -178,11 +169,11 @@ public class DBController {
 			resultSet = preparedStatement.executeQuery();
 
 			if (!resultSet.isBeforeFirst()) {
-				System.out.println(Constant.MSG_NOT_FIND);
+				System.out.println(ConstantMsg.MSG_NOT_FIND);
 				return;
 			}
 
-			System.out.println(Constant.EMP_COLUMN_NAME);
+			System.out.println(ConstantValue.EMP_COLUMN_NAME);
 			while (resultSet.next()) {
 				//DTO への格納 
 				employee.setEmpId(resultSet.getInt("emp_id")); 
@@ -239,7 +230,7 @@ public class DBController {
 			preparedStatement.executeUpdate();
 
 			// 登録完了メッセージを出力
-			System.out.println(Constant.MSG_EMPLOYEE_INSERT);
+			System.out.println(ConstantMsg.MSG_EMPLOYEE_INSERT);
 		} finally {
 			DBManager.close(preparedStatement);
 			DBManager.close(connection);
@@ -268,17 +259,17 @@ public class DBController {
 			// ステートメントの作成
 			preparedStatement = connection.prepareStatement(ConstantSQL.SQL_UPDATE);
 
-			System.out.print(Constant.EMP_NAME);
+			System.out.print(ConstantValue.EMP_NAME);
 			String empName = br.readLine();
 			// 性別を入力
-			System.out.print(Constant.GENDER);
+			System.out.print(ConstantValue.GENDER);
 			String gender = br.readLine();
 			// 誕生日を入力
-			System.out.print(Constant.BIRTHDAY);
+			System.out.print(ConstantValue.BIRTHDAY);
 			String birthday = br.readLine();
 
 			// 部署IDを入力
-			System.out.print(Constant.DEPT_ID);
+			System.out.print(ConstantValue.DEPT_ID);
 			String deptId = br.readLine();
 
 			// 入力値をバインド
@@ -326,7 +317,7 @@ public class DBController {
 			// SQL文の実行(失敗時は戻り値0)
 			preparedStatement.executeUpdate();
 
-			System.out.println(Constant.MSG_EMPLOYEE_DELETE);
+			System.out.println(ConstantMsg.MSG_EMPLOYEE_DELETE);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -344,4 +335,5 @@ public class DBController {
 			// DBとの接続を切断
 		}
 	}
+
 }

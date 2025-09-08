@@ -1,7 +1,10 @@
 package jp.co.sss.crud.dto;
 
-import jp.co.sss.crud.util.Constant;
+import jp.co.sss.crud.util.ConstantValue;
 
+/**
+ * 社員情報管理用クラス
+ */
 public class Employee {
 
 	private Integer empId;
@@ -64,13 +67,13 @@ public class Employee {
 	public String toString() {
 		String gender_ja = "";
 		if (gender == 0) {
-			gender_ja = Constant.NODATE;
+			gender_ja = ConstantValue.NODATE;
 		} else if (this.gender == 1) {
-			gender_ja = Constant.MALE;
+			gender_ja = ConstantValue.MALE;
 		} else if (this.gender == 2) {
-			gender_ja = Constant.FEMALE;
+			gender_ja = ConstantValue.FEMALE;
 		} else if (gender == 9) {
-			gender_ja = Constant.OTHER;
+			gender_ja = ConstantValue.OTHER;
 		}
 
 		return empId + "\t" + empName + "\t" + gender_ja + "\t" + birthday + "\t" + department.getDeptName();
