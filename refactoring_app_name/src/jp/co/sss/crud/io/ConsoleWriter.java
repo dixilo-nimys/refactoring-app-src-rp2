@@ -4,10 +4,24 @@ import java.util.List;
 
 import jp.co.sss.crud.dto.Employee;
 import jp.co.sss.crud.util.ConstantMsg;
+import jp.co.sss.crud.util.ConstantValue;
 
 public class ConsoleWriter {
 
 	private ConsoleWriter() {
+	}
+	
+	public static void showMenu() {
+		System.out.println(ConstantValue.MENU_LABEL);
+		System.out.println(ConstantValue.MENU_1_FINDALL);
+		System.out.println(ConstantValue.MENU_2_FINDBYNAME);
+		System.out.println(ConstantValue.MENU_3_FINDBYID);
+		System.out.println(ConstantValue.MENU_4_INSERT);
+		System.out.println(ConstantValue.MENU_5_UPDATE);
+		System.out.println(ConstantValue.MENU_6_DELETE);
+		System.out.println(ConstantValue.MENU_7_CLOSE);
+		System.out.print(ConstantMsg.MSG_MENU);
+		
 	}
 
 	public static void showEmployees(List<Employee> employees) {
@@ -19,6 +33,10 @@ public class ConsoleWriter {
 				System.out.println(employee);
 			}
 		}
+	}
+	
+	public static void showMsg(String msg) {
+		System.out.println(msg);
 	}
 
 }

@@ -15,12 +15,20 @@ public class ConstantValue {
 	public static final String MENU_6_DELETE = "6.削除";
 	public static final String MENU_7_CLOSE = "7.終了";
 	
+	public static final int MENU_SELECT_ALL = 1;
+	public static final int MENU_SEARCH_EMP_NAME = 2;
+	public static final int MENU_SEARCH_DEPT_ID = 3;
+	public static final int MENU_INSERT = 4;
+	public static final int MENU_UPDATE = 5;
+	public static final int MENU_DELETE = 6;
+	
 	public static final String EMP_COLUMN_NAME = "社員ID\t社員名\t性別\t生年月日\t部署名";
 	
 	public static final String EMP_NAME = "社員名：";
 	public static final String GENDER = "性別(0:その他, 1:男性, 2:女性, 9:回答なし):";
 	public static final String BIRTHDAY = "生年月日(西暦年/月/日):";
 	public static final String DEPT_ID = "部署ID(1:営業部、2:経理部、3:総務部):";
+	public static final String EMP_ID = "社員ID：";
 	
 	public static final String NODATE = "回答なし";
 	public static final String MALE = "男性";

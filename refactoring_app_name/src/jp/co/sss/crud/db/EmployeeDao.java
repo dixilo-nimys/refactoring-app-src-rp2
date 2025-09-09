@@ -12,31 +12,31 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import jp.co.sss.crud.dto.Department;
 import jp.co.sss.crud.dto.Employee;
+import jp.co.sss.crud.exception.SystemErrorException;
+import jp.co.sss.crud.service.EmployeeRegisterService;
 import jp.co.sss.crud.util.ConstantMsg;
 import jp.co.sss.crud.util.ConstantSQL;
 import jp.co.sss.crud.util.ConstantValue;
 
-public class EmployeeDao {
+public class EmployeeDao implements IEmployeeDao {
 	
-	/** インスタンス化を禁止 */
-	private EmployeeDao() {
-	}
-
+	@Override
 	/**
 	 * 全ての社員情報を検索
-	 *
-	 * @throws ClassNotFoundException ドライバクラスが不在の場合に送出
-	 * @throws SQLException           DB処理でエラーが発生した場合に送出
+	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static List<Employee> findAll() throws ClassNotFoundException, SQLException {
+//	, ClassNotFoundException, SQLException
+	public List<Employee> findAll() throws SystemErrorException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		List<Employee> employees = new ArrayList<Employee>();
-		
+
 		try {
 			// DBに接続
 			connection = DBManager.getConnection();
@@ -46,13 +46,11 @@ public class EmployeeDao {
 
 			// SQL文を実行
 			resultSet = preparedStatement.executeQuery();
-
-			// レコードを出力
-//			System.out.println(ConstantValue.EMP_COLUMN_NAME);
+			
+			//DTOを格納
 			while (resultSet.next()) {
 				Employee employee = new Employee();
 				Department department = new Department();
-				//DTO への格納 
 				employee.setEmpId(resultSet.getInt("emp_id")); 
 				employee.setEmpName(resultSet.getString("emp_name"));
 				employee.setGender(Integer.parseInt(resultSet.getString("gender")));
@@ -61,8 +59,12 @@ public class EmployeeDao {
 				employee.setDepartment(department);
 				employees.add(employee);
 			}
+			
 			//DTO を戻す 
 			return employees;
+			
+		} catch (ClassNotFoundException | SQLException e) { 
+			throw new SystemErrorException(MSG_SYSTEM_ERROR, e);//独自例外の送出
 		} finally {
 			// ResultSetをクローズ
 			DBManager.close(resultSet);
@@ -80,7 +82,7 @@ public class EmployeeDao {
 	 * @throws SQLException           DB処理でエラーが発生した場合に送出
 	 * @throws IOException            入力処理でエラーが発生した場合に送出
 	 */
-	public static void findByName() throws ClassNotFoundException, SQLException, IOException {
+	public List<Employee> findByEmployeeName(String searchName) throws SystemErrorException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 		// 検索ワード
@@ -89,7 +91,7 @@ public class EmployeeDao {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		
+
 		Employee employee = new Employee();
 		Department department = new Department();
 		try {
@@ -112,10 +114,10 @@ public class EmployeeDao {
 				System.out.println(ConstantMsg.MSG_NOT_FIND);
 				return;
 			}
-			
+
 			while (resultSet.next()) {
 				//DTO への格納 
-				employee.setEmpId(resultSet.getInt("emp_id")); 
+				employee.setEmpId(resultSet.getInt("emp_id"));
 				employee.setEmpName(resultSet.getString("emp_name"));
 				employee.setGender(Integer.parseInt(resultSet.getString("gender")));
 				employee.setBirthday(resultSet.getString("birthday"));
@@ -125,6 +127,9 @@ public class EmployeeDao {
 			}
 
 			System.out.println("");
+			
+		} catch (ClassNotFoundException | SQLException e) { 
+			throw new SystemErrorException(MSG_SYSTEM_ERROR, e);//独自例外の送出
 
 		} finally {
 			// クローズ処理
@@ -143,12 +148,12 @@ public class EmployeeDao {
 	 * @throws SQLException           DB処理でエラーが発生した場合に送出
 	 * @throws IOException            入力処理でエラーが発生した場合に送出
 	 */
-	public static void findById(String deptId) throws ClassNotFoundException, SQLException, IOException {
+	public List<Employee> findByDeptId(int deptId) throws SystemErrorException {
 
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		
+
 		Employee employee = new Employee();
 		Department department = new Department();
 		try {
@@ -176,7 +181,7 @@ public class EmployeeDao {
 			System.out.println(ConstantValue.EMP_COLUMN_NAME);
 			while (resultSet.next()) {
 				//DTO への格納 
-				employee.setEmpId(resultSet.getInt("emp_id")); 
+				employee.setEmpId(resultSet.getInt("emp_id"));
 				employee.setEmpName(resultSet.getString("emp_name"));
 				employee.setGender(Integer.parseInt(resultSet.getString("gender")));
 				employee.setBirthday(resultSet.getString("birthday"));
@@ -186,6 +191,8 @@ public class EmployeeDao {
 			}
 
 			System.out.println("");
+		} catch (ClassNotFoundException | SQLException e) { 
+			throw new SystemErrorException(MSG_SYSTEM_ERROR, e);//独自例外の送出
 		} finally {
 			// クローズ処理
 			DBManager.close(resultSet);
@@ -208,8 +215,7 @@ public class EmployeeDao {
 	 * @throws IOException             入力処理でエラーが発生した場合に送出
 	 * @throws ParseException 
 	 */
-	public static void insert(String empName, String gender, String birthday, String deptId)
-			throws ClassNotFoundException, SQLException, IOException, ParseException {
+	public void insert(Employee employee) throws SystemErrorException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		try {
@@ -218,19 +224,24 @@ public class EmployeeDao {
 
 			// ステートメントを作成
 			preparedStatement = connection.prepareStatement(ConstantSQL.SQL_INSERT);
+			
+			//値の入力
+			Map<String,String> empMap = EmployeeRegisterService.insert();
 
 			// 入力値をバインド
-			preparedStatement.setString(1, empName);
-			preparedStatement.setInt(2, Integer.parseInt(gender));
+			preparedStatement.setString(1, empMap.get("empName"));
+			preparedStatement.setInt(2, Integer.parseInt(empMap.get("gender")));
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-			preparedStatement.setObject(3, sdf.parse(birthday), Types.DATE);
-			preparedStatement.setInt(4, Integer.parseInt(deptId));
+			preparedStatement.setObject(3, sdf.parse(empMap.get("birthday")), Types.DATE);
+			preparedStatement.setInt(4, Integer.parseInt(empMap.get("deptId")));
 
 			// SQL文を実行
 			preparedStatement.executeUpdate();
 
 			// 登録完了メッセージを出力
 			System.out.println(ConstantMsg.MSG_EMPLOYEE_INSERT);
+		} catch (ClassNotFoundException | SQLException e) { 
+			throw new SystemErrorException(MSG_SYSTEM_ERROR, e);//独自例外の送出
 		} finally {
 			DBManager.close(preparedStatement);
 			DBManager.close(connection);
@@ -246,8 +257,7 @@ public class EmployeeDao {
 	 * @throws IOException             入力処理でエラーが発生した場合に送出
 	 * @throws ParseException 
 	 */
-	public static void update(String empId)
-			throws ClassNotFoundException, SQLException, IOException, ParseException {
+	public Integer update(Employee employee) throws SystemErrorException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -258,7 +268,8 @@ public class EmployeeDao {
 
 			// ステートメントの作成
 			preparedStatement = connection.prepareStatement(ConstantSQL.SQL_UPDATE);
-
+			
+			// 社員名を入力
 			System.out.print(ConstantValue.EMP_NAME);
 			String empName = br.readLine();
 			// 性別を入力
@@ -271,6 +282,10 @@ public class EmployeeDao {
 			// 部署IDを入力
 			System.out.print(ConstantValue.DEPT_ID);
 			String deptId = br.readLine();
+			
+			// 社員IDを入力
+			System.out.print(ConstantValue.EMP_ID);
+			String empId = br.readLine();
 
 			// 入力値をバインド
 			preparedStatement.setString(1, empName);
@@ -282,6 +297,9 @@ public class EmployeeDao {
 
 			// SQL文の実行(失敗時は戻り値0)
 			preparedStatement.executeUpdate();
+			
+		} catch (ClassNotFoundException | SQLException e) { 
+			throw new SystemErrorException(MSG_SYSTEM_ERROR, e);//独自例外の送出
 
 		} finally {
 			// クローズ処理
@@ -298,7 +316,7 @@ public class EmployeeDao {
 	 * @throws SQLException           DB処理でエラーが発生した場合に送出
 	 * @throws IOException            入力処理でエラーが発生した場合に送出
 	 */
-	public static void delete() {
+	public Integer delete(Integer empId) throws SystemErrorException {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -319,8 +337,10 @@ public class EmployeeDao {
 
 			System.out.println(ConstantMsg.MSG_EMPLOYEE_DELETE);
 
-		} catch (Exception e) {
-			e.printStackTrace();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+		} catch (ClassNotFoundException | SQLException e) { 
+			throw new SystemErrorException(MSG_SYSTEM_ERROR, e);//独自例外の送出
 
 		}
 
@@ -329,8 +349,10 @@ public class EmployeeDao {
 			try {
 				DBManager.close(preparedStatement);
 				DBManager.close(connection);
-			} catch (SQLException e) {
-				e.printStackTrace();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+			} catch (ClassNotFoundException | SQLException e) { 
+				throw new SystemErrorException(MSG_SYSTEM_ERROR, e);//独自例外の送出
 			}
 			// DBとの接続を切断
 		}
