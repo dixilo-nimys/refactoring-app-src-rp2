@@ -1,5 +1,7 @@
 package jp.co.sss.crud.dto;
 
+import java.util.Date;
+
 import jp.co.sss.crud.util.ConstantValue;
 
 /**
@@ -10,7 +12,7 @@ public class Employee {
 	private Integer empId;
 	private String empName;
 	private int gender;
-	private String birthday;
+	private Date birthday;
 	private String deptName;
 	private Department department;
 
@@ -38,11 +40,11 @@ public class Employee {
 		this.gender = gender;
 	}
 
-	public String getBirthday() {
+	public Date getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(String birthday) {
+	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
 

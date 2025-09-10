@@ -1,11 +1,16 @@
 package jp.co.sss.crud.io;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import jp.co.sss.crud.exception.IllegalInputException;
 import jp.co.sss.crud.exception.SystemErrorException;
 
 public class EmployeeBirthdayReader implements IConsoleReader {
-	public String BirthdayReader() throws SystemErrorException, IllegalInputException {
-		String searchBirthday = (String)input();
+	public Date BirthdayReader() throws SystemErrorException, IllegalInputException, ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		Date searchBirthday = sdf.parse((String) input());
 		return searchBirthday;
 	}
 
@@ -18,7 +23,7 @@ public class EmployeeBirthdayReader implements IConsoleReader {
 	@Override
 	public boolean isValid(String inputString) {
 		// TODO 自動生成されたメソッド・スタブ
-		return false;
+		return inputString.matches("yyyy/MM/dd");
 	}
 
 	@Override

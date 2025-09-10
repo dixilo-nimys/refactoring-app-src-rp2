@@ -15,7 +15,7 @@ public class EmployeeAllFindService implements IEmployeeService {
 		// TODO 自動生成されたメソッド・スタブ
 		EmployeeDao employeeDao = new EmployeeDao();
 		List<Employee> employees = employeeDao.findAll();
-		ConsoleWriter.show(employees);
+		ConsoleWriter.showEmployees(employees);
 	}
 	
 

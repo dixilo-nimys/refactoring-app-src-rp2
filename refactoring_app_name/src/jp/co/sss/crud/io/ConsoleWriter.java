@@ -10,7 +10,7 @@ public class ConsoleWriter {
 
 	private ConsoleWriter() {
 	}
-	
+
 	public static void showMenu() {
 		System.out.println(ConstantValue.MENU_LABEL);
 		System.out.println(ConstantValue.MENU_1_FINDALL);
@@ -21,20 +21,18 @@ public class ConsoleWriter {
 		System.out.println(ConstantValue.MENU_6_DELETE);
 		System.out.println(ConstantValue.MENU_7_CLOSE);
 		System.out.print(ConstantMsg.MSG_MENU);
-		
+
 	}
 
 	public static void showEmployees(List<Employee> employees) {
 		if (employees.isEmpty()) {
 			System.out.println(ConstantMsg.MSG_NOT_FIND);//対象者がいませんでした と表示 
 		} else {
-			System.out.println(ConstantMsg.MSG_MENU);
 			for (Employee employee : employees) {
 				System.out.println(employee);
 			}
 		}
 	}
-	
 	public static void showMsg(String msg) {
 		System.out.println(msg);
 	}

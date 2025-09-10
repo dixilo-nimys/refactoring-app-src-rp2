@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 
 import jp.co.sss.crud.util.ConstantMsg;
 
-public class MenuNoReader {
+public class MenuNoReader implements IConsoleReader {
 	
 	private MenuNoReader() {
 	}
@@ -22,6 +22,24 @@ public class MenuNoReader {
 	
 	public static void Close() {
 		System.out.println(ConstantMsg.MSG_CLOSE);
+	}
+
+	@Override
+	public String getErrorMsg() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public boolean isValid(String inputString) {
+		// TODO 自動生成されたメソッド・スタブ
+		return inputString.matches("^[1-7１-７]$");//1-7までの数値
+	}
+
+	@Override
+	public boolean isParseInt() {
+		// TODO 自動生成されたメソッド・スタブ
+		return false;
 	}
 
 }

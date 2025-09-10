@@ -19,7 +19,7 @@ public class EmployeeGenderReader implements IConsoleReader {
 	@Override
 	public boolean isValid(String inputString) {
 		// TODO 自動生成されたメソッド・スタブ
-		return false;
+		return inputString.matches("^|[0129０１２９]{1}$");
 	}
 
 	@Override

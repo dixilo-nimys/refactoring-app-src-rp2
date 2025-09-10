@@ -19,5 +19,6 @@ public class ConstantMsg {
 	
 	public static final String MSG_CLOSE = "システムを終了します。";
 	
-	public static final String MSG_SYSTEM_ERROR = "システムエラーが発生しました。";
+	public static final String MSG_SYSTEM_ERRO = "システムエラーが発生しました";
+	public static final String MSG_SYSTEM_ERROR = "システムエラーが発生しました";
 }
